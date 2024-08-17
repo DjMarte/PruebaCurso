@@ -1,10 +1,16 @@
+using Microsoft.EntityFrameworkCore;
 using PrimerProyecto.Components;
+using PrimerProyecto.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+// Inyeccion del contexto
+var ConStr = builder.Configuration.GetConnectionString("ConStr");
+builder.Services.AddDbContext<Contexto>(o => o.UseSqlite(ConStr));
 
 var app = builder.Build();
 
