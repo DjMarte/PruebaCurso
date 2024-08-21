@@ -1,0 +1,93 @@
+﻿@page "/Estudiante/Index"
+
+@inject EstudianteService estudiantesService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+@*HTML*@
+
+<PageTitle>Index</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header text-center">
+            <h3><strong>Listado de Estudiantes</strong></h3>
+            <div class="text-end">
+                <button type="button" class="btn btn-primary" @onclick="PantallaCrear"> Crear</button>
+            </div>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            <table class="table table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th>EstudianteId</th>
+                        <th>Nombre</th>
+                        <th>Matr&iacute;cula</th>
+                        <th>Carrera</th>
+                        <th>Observar</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(var estudiante in ListaEstudiante) {
+                        <tr>
+                            <td>@estudiante.EstudianteId</td>
+                            <td>@estudiante.Nombre</td>
+                            <td>@estudiante.Matricula</td>
+                            <td>@estudiante.Carrera</td>
+                            @*Pantalla Observar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-primary bi bi-eye"
+                                        @onclick="()=> PantallaObservar(estudiante.EstudianteId)"></button>   
+                            </td>
+                            @*Pantalla Editar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-warning bi bi-pencil"
+                                        @onclick="()=> PantallaEditar(estudiante.EstudianteId)"></button>   
+                            </td>
+                            @*Pantalla Eliminar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-danger bi bi-trash"
+                                        @onclick="()=> PantallaEliminar(estudiante.EstudianteId)"></button>   
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            <p><strong>Total de Estudiantes: </strong>@ListaEstudiante.Count()</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+    public List<Estudiantes> ListaEstudiante { get; set; } = new List<Estudiantes>();
+
+    protected override async Task OnInitializedAsync() {
+        ListaEstudiante = await estudiantesService.Listar(e => e.EstudianteId > 0);
+    }
+
+    public void PantallaCrear() {
+        navigationManager.NavigateTo("/Estudiante/Create");
+    }
+    
+    public void PantallaObservar(int id) {
+        navigationManager.NavigateTo($"/Estudiante/Create/{id}");
+    }
+    
+    public void PantallaEditar(int id) {
+        navigationManager.NavigateTo($"/Estudiante/Editar/{id}");
+    }
+    
+    public void PantallaEliminar(int id) {
+        navigationManager.NavigateTo($"/Estudiante/Editar/{id}");
+    }
+}
