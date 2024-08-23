@@ -1,0 +1,44 @@
+﻿@page "/Estudiante/Details/{EstudianteId:int}"
+
+@inject EstudianteService estudianteService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Details</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header text-center">
+            <h3><strong>Datos del Estudiante</strong></h3>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            <ul class="mt-5">
+                <li><strong>Id: </strong>@Estudiante.EstudianteId</li>
+                <li><strong>Nombre: </strong>@Estudiante.Nombre</li>
+                <li><strong>Matricula: </strong>@Estudiante.Matricula</li>
+                <li><strong>Carrera: </strong>@Estudiante.Carrera</li>
+            </ul>
+        </div>
+        @*Footer*@
+        <div class="card-footer text-center">
+            <button type="button" class="btn btn-primary" @onclick="Volver">Volver</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int EstudianteId { get; set; }
+
+    public Estudiantes Estudiante { get; set; } = new Estudiantes();
+
+    protected override async Task OnInitializedAsync() {
+        Estudiante = await estudianteService.Buscar(EstudianteId);
+    }
+
+    public void Volver() {
+        navigationManager.NavigateTo("/Estudiante/Index");
+    }
+}
+
