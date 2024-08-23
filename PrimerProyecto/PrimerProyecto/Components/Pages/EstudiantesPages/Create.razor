@@ -6,7 +6,7 @@
 
 <PageTitle>Create</PageTitle>
 <EditForm Model="Estudiante" OnValidSubmit="Guardar">
-    <DataAnnotationsValidator/>
+    <DataAnnotationsValidator />
     @*Formulario*@
     <div class="container">
         <div class="shadow-lg">
@@ -26,7 +26,7 @@
                     <div class="col-3 ms-5">
                         <label class="form-label"><strong>Nombre</strong></label>
                         <InputText class="form-control" @bind-Value="Estudiante.Nombre"></InputText>
-                        <ValidationMessage For="(()=> Estudiante.Nombre)"/>
+                        <ValidationMessage For="(()=> Estudiante.Nombre)" />
                     </div>
                     @*Matricula*@
                     <div class="col-3 ms-5">
@@ -58,11 +58,22 @@
     public string Mensaje { get; set; } = string.Empty;
 
     public async Task Guardar() {
+        if(await Validar()) {
+            Mensaje = "Ya existe un estudiante con este nombre o esta matricula";
+            return;
+        }
+
         var crear = await estudianteService.Guardar(Estudiante);
+
         if (crear)
             Mensaje = "Se ha creado correctamente el estudiante";
         else
             Mensaje = "No se ha creado correctamente";
+    }
+
+    private async Task<bool> Validar() {
+        var existe = await estudianteService.ExisteEstudiante(Estudiante.EstudianteId, Estudiante.Nombre, Estudiante.Matricula);
+        return existe;
     }
 
     public void Volver() {
