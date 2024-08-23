@@ -36,7 +36,14 @@ public class EstudianteService
         return await _contexto.Estudiantes
             .AnyAsync(e => e.EstudianteId == estudianteId);
     }
-
+    
+    public async Task<bool> ExisteEstudiante(int estudianteId, string nombre, string matricula) {
+        return await _contexto.Estudiantes
+            .AnyAsync(e => e.EstudianteId != estudianteId 
+            && e.Nombre.ToLower().Equals(nombre.ToLower())
+            || e.Matricula.Equals(matricula));
+    }
+    
     public async Task<Estudiantes?> Buscar(int id) {
         return await _contexto.Estudiantes
             .AsNoTracking()
