@@ -15,6 +15,10 @@ builder.Services.AddDbContext<Contexto>(o => o.UseSqlite(ConStr));
 
 //Inyeccion del Servicio
 builder.Services.AddScoped<EstudianteService>();
+builder.Services.AddScoped<DiaSemanaService>();
+
+//Inyeccion de Bootstrap
+builder.Services.AddBlazorBootstrap();
 
 var app = builder.Build();
 

@@ -1,6 +1,7 @@
 ﻿@page "/Estudiante/Index"
 
 @inject EstudianteService estudiantesService
+@inject DiaSemanaService diaSemanaService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
@@ -40,7 +41,7 @@
                 @*Busqueda*@
                 <div class="col-4">
                     <div class="input-group">
-                        <input class="form-control" @bind="ValorFiltro" placeholder="Buscar"/>
+                        <input class="form-control" @bind="ValorFiltro" placeholder="Buscar" />
                         <button type="button" class="btn btn-outline-primary bi bi-search" @onclick="Buscar"></button>
                     </div>
                 </div>
@@ -58,6 +59,7 @@
                     <tr>
                         <th>EstudianteId</th>
                         <th>Nombre</th>
+                        <th>D&iacute;asSemana</th>
                         <th>Matr&iacute;cula</th>
                         <th>Carrera</th>
                         <th>Observar</th>
@@ -66,26 +68,29 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(var estudiante in ListaEstudiante) {
+                    @foreach (var estudiante in ListaEstudiante) {
                         <tr>
                             <td>@estudiante.EstudianteId</td>
                             <td>@estudiante.Nombre</td>
+
+                            <td>@estudiante.DiasSemana?.Dias</td>
+
                             <td>@estudiante.Matricula</td>
                             <td>@estudiante.Carrera</td>
                             @*Pantalla Observar*@
                             <td>
                                 <button type="button" class="btn btn-outline-primary bi bi-eye"
-                                        @onclick="()=> PantallaObservar(estudiante.EstudianteId)"></button>   
+                                        @onclick="()=> PantallaObservar(estudiante.EstudianteId)"></button>
                             </td>
                             @*Pantalla Editar*@
                             <td>
                                 <button type="button" class="btn btn-outline-warning bi bi-pencil"
-                                        @onclick="()=> PantallaEditar(estudiante.EstudianteId)"></button>   
+                                        @onclick="()=> PantallaEditar(estudiante.EstudianteId)"></button>
                             </td>
                             @*Pantalla Eliminar*@
                             <td>
                                 <button type="button" class="btn btn-outline-danger bi bi-trash"
-                                        @onclick="()=> PantallaEliminar(estudiante.EstudianteId)"></button>   
+                                        @onclick="()=> PantallaEliminar(estudiante.EstudianteId)"></button>
                             </td>
                         </tr>
                     }
@@ -105,16 +110,17 @@
 
 @code {
     public List<Estudiantes> ListaEstudiante { get; set; } = new List<Estudiantes>();
+    public List<DiasSemanas> ListaDiasSemanas { get; set; } = new List<DiasSemanas>();
     public string Filtro { get; set; } = string.Empty;
     public string ValorFiltro { get; set; } = string.Empty;
 
     protected override async Task OnInitializedAsync() {
         ListaEstudiante = await estudiantesService.Listar(e => e.EstudianteId > 0);
+        ListaDiasSemanas = await diaSemanaService.Listar(e => e.DiasSemanasId > 0);
     }
 
     private async Task Buscar() {
-        if (ValorFiltro.Trim() != "")
-        {
+        if (ValorFiltro.Trim() != "") {
             if (Filtro == "Id" && int.TryParse(ValorFiltro, out int estudianteId))
                 ListaEstudiante = await estudiantesService.Listar(e => e.EstudianteId == estudianteId);
             else if (Filtro == "Nombre")
@@ -135,15 +141,15 @@
     public void PantallaCrear() {
         navigationManager.NavigateTo("/Estudiante/Create");
     }
-    
+
     public void PantallaObservar(int id) {
         navigationManager.NavigateTo($"/Estudiante/Details/{id}");
     }
-    
+
     public void PantallaEditar(int id) {
         navigationManager.NavigateTo($"/Estudiante/Edit/{id}");
     }
-    
+
     public void PantallaEliminar(int id) {
         navigationManager.NavigateTo($"/Estudiante/Delete/{id}");
     }

@@ -1,0 +1,78 @@
+﻿@page "/DiaSemana/Create"
+
+@inject DiaSemanaService estudianteService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+<PageTitle>Create</PageTitle>
+
+<EditForm Model="DiaSemana" OnValidSubmit="Guardar">
+    <DataAnnotationsValidator />
+    @*Formulario*@
+    <div class="container">
+        <div class="shadow-lg">
+            @*Header*@
+            <div class="card-header text-center">
+                <h3><strong>Crear D&iacute;as</strong></h3>
+            </div>
+            @*Body*@
+            <div class="card-body">
+                <div class="row">
+                    @*Id*@
+                    <div class="col-1">
+                        <label class="form-label"><strong>DiasSemanasId</strong></label>
+                        <InputNumber class="form-control" @bind-Value="DiaSemana.DiasSemanasId" readonly></InputNumber>
+                    </div>
+                    @*Nombre*@
+                    <div class="col-3 ms-5">
+                        <label class="form-label"><strong>D&iacute;as</strong></label>
+                        <InputText class="form-control" @bind-Value="DiaSemana.Dias"></InputText>
+                        <ValidationMessage For="(()=> DiaSemana.Dias)" />
+                    </div>
+                </div>
+            </div>
+            @*Footer*@
+            <div class="card-footer text-center">
+                <button type="button" class="btn btn-primary" @onclick="Volver">Volver</button>
+                <button type="submit" class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@Mensaje
+
+
+
+@code {
+    public DiasSemanas DiaSemana { get; set; } = new DiasSemanas();
+    // private List<ToastMessage> notificacion = new List<ToastMessage>();
+    public string Mensaje { get; set; } = string.Empty;
+
+    // private void MostrarMensaje(ToastType toastType, string mensaje) {
+    //     notificacion.Add(CreateToastMessage(toastType, mensaje));
+    // }
+
+    // private ToastMessage CreateToastMessage(ToastType toastType, string mensaje)
+    // => new ToastMessage {
+    //         Type = toastType,
+    //         Title = "Notificación",
+    //         HelpText = $"{DateTime.Now}",
+    //         Message = mensaje,
+    //     };
+
+    public async Task Guardar() {
+
+        var crear = await estudianteService.Guardar(DiaSemana);
+
+        if (crear)
+            Mensaje = "Se ha creado correctamente";
+            // MostrarMensaje(ToastType.Success, "Se ha creado correctamente");
+        else
+            Mensaje = "No Se ha creado correctamente";
+    }
+
+    public void Volver() {
+        navigationManager.NavigateTo("/DiaSemana/Index");
+    }
+}

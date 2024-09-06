@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PrimerProyecto.Models;
 
@@ -20,4 +21,7 @@ public class Estudiantes
     [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Solo se permiten letras")]
     public string? Carrera { get; set; }
 
+    [ForeignKey("DiasSemanasId")]
+    public int DiaId { get; set; }
+    public DiasSemanas? DiasSemana { get; set; }
 }

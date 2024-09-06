@@ -1,0 +1,97 @@
+﻿@page "/DiaSemana/Index"
+
+@inject DiaSemanaService diaSemanaService
+@inject NavigationManager navigationManager
+@rendermode InteractiveServer
+
+@*HTML*@
+
+<PageTitle>Index</PageTitle>
+<div class="container">
+    <div class="shadow-lg">
+        @*Header*@
+        <div class="card-header text-center">
+            <h3><strong>Listado de D&iacute;as</strong></h3>
+        </div>
+        @*Body*@
+        <div class="card-body">
+            @*Inputs y Botones*@
+            <div class="row">
+                @*Crear*@
+                <div class="col text-end">
+                    <button type="button" class="btn btn-primary" @onclick="PantallaCrear"> Crear</button>
+                </div>
+            </div>
+            <table class="table table-bordered text-center mt-4">
+                <thead>
+                    <tr>
+                        <th>DiasSemanasId</th>
+                        <th>D&iacute;as</th>
+                        <th>Observar</th>
+                        <th>Editar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var dia in ListaDiasSemanas) {
+                        <tr>
+                            <td>@dia.DiasSemanasId</td>
+                            <td>@dia.Dias</td>
+
+                            @*Pantalla Observar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-primary bi bi-eye"
+                                        @onclick="()=> PantallaObservar(dia.DiasSemanasId)"></button>
+                            </td>
+                            @*Pantalla Editar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-warning bi bi-pencil"
+                                        @onclick="()=> PantallaEditar(dia.DiasSemanasId)"></button>
+                            </td>
+                            @*Pantalla Eliminar*@
+                            <td>
+                                <button type="button" class="btn btn-outline-danger bi bi-trash"
+                                        @onclick="()=> PantallaEliminar(dia.DiasSemanasId)"></button>
+                            </td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+        @*Footer*@
+        <div class="card-footer">
+            <p><strong>Total de D&iacute;as: </strong>@ListaDiasSemanas.Count()</p>
+        </div>
+    </div>
+</div>
+
+
+
+
+@code {
+    public List<DiasSemanas> ListaDiasSemanas { get; set; } = new List<DiasSemanas>();
+    public string Filtro { get; set; } = string.Empty;
+    public string ValorFiltro { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync() {
+        ListaDiasSemanas = await diaSemanaService.Listar(e => e.DiasSemanasId > 0);
+    }
+
+
+    public void PantallaCrear() {
+        navigationManager.NavigateTo("/DiaSemana/Create");
+    }
+
+    public void PantallaObservar(int id) {
+        navigationManager.NavigateTo($"/DiaSemana/Details/{id}");
+    }
+
+    public void PantallaEditar(int id) {
+        navigationManager.NavigateTo($"/DiaSemana/Edit/{id}");
+    }
+
+    public void PantallaEliminar(int id) {
+        navigationManager.NavigateTo($"/DiaSemana/Delete/{id}");
+    }
+}

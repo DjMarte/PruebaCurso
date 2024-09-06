@@ -1,10 +1,14 @@
 ﻿@page "/Estudiante/Create"
 
 @inject EstudianteService estudianteService
+@inject DiaSemanaService diaSemanaService
 @inject NavigationManager navigationManager
 @rendermode InteractiveServer
 
 <PageTitle>Create</PageTitle>
+
+@* <Toasts class="p-3" AutoHide="true" Delay="4000" Placement="ToastsPlacement.TopRight" /> *@
+
 <EditForm Model="Estudiante" OnValidSubmit="Guardar">
     <DataAnnotationsValidator />
     @*Formulario*@
@@ -41,6 +45,16 @@
                         <ValidationMessage For="(()=> Estudiante.Carrera)" />
                     </div>
                 </div>
+               @*Select de Dias*@
+               <div class="col-4 mt-3">
+                   <label class="form-label">D&iacute;asSemana</label>
+                   <InputSelect class="form-select" @bind-Value="Estudiante.DiaId">
+                       <option value="0" selected disabled>Selecciona un dia de la semana</option>
+                        @foreach(var dia in ListaDias) {
+                            <option value="@dia.DiasSemanasId">@dia.Dias</option>
+                        }
+                    </InputSelect>
+               </div>
             </div>
             @*Footer*@
             <div class="card-footer text-center">
@@ -53,22 +67,44 @@
 
 @Mensaje
 
+
+
 @code {
     public Estudiantes Estudiante { get; set; } = new Estudiantes();
-    public string Mensaje { get; set; } = string.Empty;
+    public List<DiasSemanas> ListaDias { get; set; } = new List<DiasSemanas>();
+
+    private List<ToastMessage> notificacion = new List<ToastMessage>();
+    public string Mensaje { get; set; }
+
+    protected override async Task OnInitializedAsync() {
+        ListaDias = await diaSemanaService.Listar(d => true);
+    }
+
+    // private void MostrarMensaje(ToastType toastType, string mensaje) {
+    //     notificacion.Add(CreateToastMessage(toastType, mensaje));
+    // }
+
+    // private ToastMessage CreateToastMessage(ToastType toastType, string mensaje)
+    // => new ToastMessage {
+    //         Type = toastType,
+    //         Title = "Notificación",
+    //         HelpText = $"{DateTime.Now}",
+    //         Message = mensaje,
+    // };
 
     public async Task Guardar() {
         if(await Validar()) {
-            Mensaje = "Ya existe un estudiante con este nombre o esta matricula";
+            Mensaje = "Ya existe un estudiante con esta matricula o nombre";
             return;
         }
 
         var crear = await estudianteService.Guardar(Estudiante);
 
         if (crear)
-            Mensaje = "Se ha creado correctamente el estudiante";
+            // Mensaje = "Se ha creado correctamente";
+            Mensaje = "Se ha creado correctamente";
         else
-            Mensaje = "No se ha creado correctamente";
+            Mensaje = "No Se ha creado correctamente";
     }
 
     private async Task<bool> Validar() {

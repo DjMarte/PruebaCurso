@@ -59,6 +59,7 @@ public class EstudianteService
 
     public async Task<List<Estudiantes>> Listar(Expression<Func<Estudiantes, bool>> critero) {
         return await _contexto.Estudiantes
+            .Include(d => d.DiasSemana)
             .AsNoTracking()
             .Where(critero)
             .ToListAsync();
